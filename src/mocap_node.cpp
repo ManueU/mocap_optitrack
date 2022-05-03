@@ -40,21 +40,22 @@
 #include <memory>
 #include <ros/ros.h>
 
+#include <mocap_optitrack/marker_array_publisher.hpp>
 
 namespace mocap_optitrack
 {
 
-class OptiTrackRosBridge
+class OptiTrackRosBridge: private MarkerArrayPublisher
 {
 public:
   OptiTrackRosBridge(ros::NodeHandle& nh,
                      ServerDescription const& serverDescr,
                      PublisherConfigurations const& pubConfigs) :
-    nh(nh), server(ros::NodeHandle("~/optitrack_config"))
+    nh(nh), server(ros::NodeHandle("~/optitrack_config")), MarkerArrayPublisher(nh)
   {
     server.setCallback(boost::bind(&OptiTrackRosBridge::reconfigureCallback, this, _1, _2));
     serverDescription = serverDescr;
-    publisherConfigurations = pubConfigs;
+    publisherConfigurations = pubConfigs; 
   }
 
   void reconfigureCallback(MocapOptitrackConfig& config, uint32_t)
@@ -124,6 +125,9 @@ public:
           // rigid bodies in the data model
           ros::Time time = ros::Time::now();
           publishDispatcherPtr->publish(time, dataModel.dataFrame.rigidBodies);
+
+          // Publish labeled markers
+          PublishMarkers(time, dataModel.dataFrame.otherMarkers);
 
           // Clear out the model to prepare for the next frame of data
           dataModel.clear();

@@ -296,6 +296,7 @@ void DataFrameMessage::deserialize(
     ROS_DEBUG("*** LABELED MARKERS ***");
     int numLabeledMarkers = 0;
     utilities::read_and_seek(msgBufferIter, numLabeledMarkers);
+    dataFrame->otherMarkers.clear();
     ROS_DEBUG("Labeled marker count: %d", numLabeledMarkers);
 
     // Loop through labeled markers
@@ -331,6 +332,8 @@ void DataFrameMessage::deserialize(
           bool bUnlabeled = (params & 0x10) != 0;   
           // marker is an active marker 
           bool bActiveMarker = (params & 0x20) != 0;
+
+          if(bActiveMarker && !bOccluded)dataFrame->otherMarkers.push_back(marker);
         }
       }
 
