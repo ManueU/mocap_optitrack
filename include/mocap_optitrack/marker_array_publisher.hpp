@@ -37,6 +37,23 @@ namespace mocap_optitrack
       
       void PublishMarkers(ros::Time time_now, std::vector<Marker> other_markers)
       { 
+
+        // Anticipate return if no unlabeled markers found
+        if(other_markers.size() == 0)
+        {
+          // Set timestamp
+          marker_.header.stamp.setNow(time_now);
+
+          // Remove old markers using the first of the new markers
+          marker_.action = marker_.DELETEALL;
+          marker_.id = 0;
+          marker_array_.markers.push_back(marker_);
+          marker_publisher_.publish(marker_array_);
+          marker_array_.markers.clear();
+
+          return;
+        }
+
         // Set timestamp
         marker_.header.stamp.setNow(time_now);
 
@@ -52,9 +69,20 @@ namespace mocap_optitrack
         
         // Loop through all the other markers
         marker_.action = marker_.ADD;
-        for(int i = 1; i < other_markers.size(); i++)
+        for(int i = 0; i < other_markers.size(); i++)
         {
           marker_.id = i;
+          if(other_markers[i].x > 500)
+          {
+            other_markers[i].x -= 1000;
+            marker_.color.r = 1;
+            marker_.color.g = 0;
+          }
+          else
+          {
+            marker_.color.r = 0;
+            marker_.color.g = 1;
+          }
           marker_.pose.position.x = other_markers[i].x;
           marker_.pose.position.y = other_markers[i].y;
           marker_.pose.position.z = other_markers[i].z;

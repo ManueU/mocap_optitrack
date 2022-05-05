@@ -313,6 +313,8 @@ void DataFrameMessage::deserialize(
       float size;
       utilities::read_and_seek(msgBufferIter, size);
 
+      std::vector<int> boolean_checks;
+
       if (NatNetVersion >= mocap_optitrack::Version("2.6"))
       {
         // marker params
@@ -324,6 +326,11 @@ void DataFrameMessage::deserialize(
         bool bPCSolved = (params & 0x02) != 0;
         // position provided by model solve
         bool bModelSolved = (params & 0x04) != 0;  
+
+        boolean_checks.push_back(bOccluded);
+        boolean_checks.push_back(bPCSolved);
+        boolean_checks.push_back(bModelSolved);
+
         if (NatNetVersion >= mocap_optitrack::Version("3.0"))
         {
           // marker has an associated model
@@ -333,14 +340,38 @@ void DataFrameMessage::deserialize(
           // marker is an active marker 
           bool bActiveMarker = (params & 0x20) != 0;
 
-          if(bActiveMarker && !bOccluded)dataFrame->otherMarkers.push_back(marker);
+          if(bUnlabeled)marker.x += 1000;
+
+          boolean_checks.push_back(bHasModel);
+          boolean_checks.push_back(bUnlabeled);
+          boolean_checks.push_back(bActiveMarker);
+
+          // if(bActiveMarker && !bOccluded)dataFrame->otherMarkers.push_back(marker);
         }
+        else
+        {
+
+          // marker.unlabeled = 0;
+
+          boolean_checks.push_back(-1);
+          boolean_checks.push_back(-1);
+          boolean_checks.push_back(-1);
+        }
+        
       }
 
       ROS_DEBUG("  MarkerID: %d, ModelID: %d", markerId, modelId);
       ROS_DEBUG("    Pos: [%3.2f,%3.2f,%3.2f]", 
         marker.x, marker.y, marker.z);
       ROS_DEBUG("    Size: %3.2f", size);
+      ROS_DEBUG("    bOccluded: %d",boolean_checks[0]);
+      ROS_DEBUG("    bPCSolved: %d",boolean_checks[1]);
+      ROS_DEBUG("    bModelSolved: %d",boolean_checks[2]);
+      ROS_DEBUG("    bHasModel: %d",boolean_checks[3]);
+      ROS_DEBUG("    bUnlabeled: %d",boolean_checks[4]);
+      ROS_DEBUG("    bActiveMarker: %d",boolean_checks[5]);
+
+      dataFrame->otherMarkers.push_back(marker);
 
       // NatNet version 3.0 and later
       if (NatNetVersion >= mocap_optitrack::Version("3.0"))
