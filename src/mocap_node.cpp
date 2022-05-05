@@ -127,6 +127,7 @@ public:
           publishDispatcherPtr->publish(time, dataModel.dataFrame.rigidBodies);
 
           // Publish labeled markers
+          time = ros::Time::now();
           PublishMarkers(time, dataModel.dataFrame.otherMarkers);
 
           // Clear out the model to prepare for the next frame of data

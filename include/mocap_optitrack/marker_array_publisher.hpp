@@ -39,23 +39,24 @@ namespace mocap_optitrack
       { 
 
         // Anticipate return if no unlabeled markers found
-        if(other_markers.size() == 0)
-        {
-          // Set timestamp
-          marker_.header.stamp.setNow(time_now);
+        // if(other_markers.size() == 0)
+        // {
+        //   // Set timestamp
+        //   marker_.header.stamp = ros::Time::now();
 
-          // Remove old markers using the first of the new markers
-          marker_.action = marker_.DELETEALL;
-          marker_.id = 0;
-          marker_array_.markers.push_back(marker_);
-          marker_publisher_.publish(marker_array_);
-          marker_array_.markers.clear();
+        //   // Remove old markers using the first of the new markers
+        //   marker_.action = marker_.DELETEALL;
+        //   marker_.id = 0;
+        //   marker_array_.markers.push_back(marker_);
+        //   marker_publisher_.publish(marker_array_);
+        //   marker_array_.markers.clear();
 
-          return;
-        }
+        //   return;
+        // }
 
         // Set timestamp
-        marker_.header.stamp.setNow(time_now);
+        marker_.header.stamp = ros::Time::now();
+        // marker_.header.stamp.setNow(time_now);
 
         // Remove old markers using the first of the new markers
         marker_.action = marker_.DELETEALL;
@@ -64,8 +65,10 @@ namespace mocap_optitrack
         marker_.pose.position.y = other_markers[0].y;
         marker_.pose.position.z = other_markers[0].z;
         marker_array_.markers.push_back(marker_);
-        marker_publisher_.publish(marker_array_);
-        marker_array_.markers.clear();
+        // marker_publisher_.publish(marker_array_);
+        // marker_array_.markers.clear();
+
+        // return;
         
         // Loop through all the other markers
         marker_.action = marker_.ADD;
@@ -90,6 +93,7 @@ namespace mocap_optitrack
         }
 
         // Publish the rest of the new markers
+        // marker_.header.stamp.setNow(time_now);
         marker_publisher_.publish(marker_array_);
         marker_array_.markers.clear();
       }
