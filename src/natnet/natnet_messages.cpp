@@ -346,7 +346,7 @@ void DataFrameMessage::deserialize(
           boolean_checks.push_back(bUnlabeled);
           boolean_checks.push_back(bActiveMarker);
 
-          // if(bActiveMarker && !bOccluded)dataFrame->otherMarkers.push_back(marker);
+          if(!bOccluded && bUnlabeled)dataFrame->otherMarkers.push_back(marker);
         }
         else
         {
@@ -371,7 +371,7 @@ void DataFrameMessage::deserialize(
       ROS_DEBUG("    bUnlabeled: %d",boolean_checks[4]);
       ROS_DEBUG("    bActiveMarker: %d",boolean_checks[5]);
 
-      dataFrame->otherMarkers.push_back(marker);
+      // dataFrame->otherMarkers.push_back(marker);
 
       // NatNet version 3.0 and later
       if (NatNetVersion >= mocap_optitrack::Version("3.0"))

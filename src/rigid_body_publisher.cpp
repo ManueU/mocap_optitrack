@@ -59,14 +59,15 @@ geometry_msgs::PoseStamped getRosPose(RigidBody const& body, const Version& coor
     // y & z axes are swapped in the Optitrack coordinate system
     // Also compatible with versions > Motive 2.0
     poseStampedMsg.pose.position.x = body.pose.position.x;
-    poseStampedMsg.pose.position.y = -body.pose.position.z;
-    poseStampedMsg.pose.position.z = body.pose.position.y;
+    poseStampedMsg.pose.position.y = body.pose.position.y;
+    poseStampedMsg.pose.position.z = body.pose.position.z;
 
     poseStampedMsg.pose.orientation.x = body.pose.orientation.x;
-    poseStampedMsg.pose.orientation.y = -body.pose.orientation.z;
-    poseStampedMsg.pose.orientation.z = body.pose.orientation.y;
+    poseStampedMsg.pose.orientation.y = body.pose.orientation.y;
+    poseStampedMsg.pose.orientation.z = body.pose.orientation.z;
     poseStampedMsg.pose.orientation.w = body.pose.orientation.w;
   }
+  
   return poseStampedMsg;
 }
 nav_msgs::Odometry getRosOdom(RigidBody const& body, const Version& coordinatesVersion)
@@ -138,6 +139,8 @@ void RigidBodyPublisher::publish(ros::Time const& time, RigidBody const& body)
     return;
   }
 
+  // std::cout << coordinatesVersion.getVersionString() << std::endl;
+
   geometry_msgs::PoseStamped pose = utilities::getRosPose(body, coordinatesVersion);
   nav_msgs::Odometry odom =  utilities::getRosOdom(body, coordinatesVersion);
 
@@ -191,6 +194,11 @@ void RigidBodyPublisher::publish(ros::Time const& time, RigidBody const& body)
                               time,
                               config.parentFrameId,
                               config.childFrameId));
+
+    // ROS_INFO("x: %.2f y:%.2f z:%.2f",transform.getOrigin().getX(),
+    //   transform.getOrigin().getY(),
+    //   transform.getOrigin().getZ());
+    
   }
 }
 
