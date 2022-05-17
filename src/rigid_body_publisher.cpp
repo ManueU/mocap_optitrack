@@ -66,6 +66,7 @@ geometry_msgs::PoseStamped getRosPose(RigidBody const& body, const Version& coor
     poseStampedMsg.pose.orientation.y = body.pose.orientation.y;
     poseStampedMsg.pose.orientation.z = body.pose.orientation.z;
     poseStampedMsg.pose.orientation.w = body.pose.orientation.w;
+    
   }
   
   return poseStampedMsg;
@@ -128,10 +129,10 @@ RigidBodyPublisher::~RigidBodyPublisher()
 void RigidBodyPublisher::publish(ros::Time const& time, RigidBody const& body)
 {
   // don't do anything if no new data was provided
-  if (!body.hasValidData())
-  {
-    return;
-  }
+  // if (!body.hasValidData())
+  // {
+  //   return;
+  // }
 
   // NaN?
   if (body.pose.position.x != body.pose.position.x)

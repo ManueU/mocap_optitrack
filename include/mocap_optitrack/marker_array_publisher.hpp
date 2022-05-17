@@ -1,5 +1,6 @@
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
+#include <std_msgs/Bool.h>
 
 namespace mocap_optitrack
 {
@@ -31,13 +32,12 @@ namespace mocap_optitrack
         marker_.color.r = 0.0f;
         marker_.color.g = 1.0f;
         marker_.color.b = 0.0f;
-        marker_.color.a = 1.0;
+        marker_.color.a = 1.0; 
 
       }
       
       void PublishMarkers(ros::Time time_now, std::vector<Marker> other_markers)
       { 
-
         // Anticipate return if no unlabeled markers found
         // if(other_markers.size() == 0)
         // {
@@ -53,7 +53,6 @@ namespace mocap_optitrack
 
         //   return;
         // }
-
         // Set timestamp
         marker_.header.stamp = ros::Time::now();
         // marker_.header.stamp.setNow(time_now);
@@ -98,10 +97,13 @@ namespace mocap_optitrack
         marker_array_.markers.clear();
       }
 
+      
+
     private:
       ros::Publisher marker_publisher_;
       visualization_msgs::Marker marker_;
       visualization_msgs::MarkerArray marker_array_;
 
+ 
   };
 }

@@ -168,6 +168,7 @@ void DataFrameMessage::RigidBodyMessagePart::deserialize(
     rigidBody.isTrackingValid = params & 0x01; // 0x01 : rigid body was successfully tracked in this frame
     ROS_DEBUG("    Successfully tracked in this frame: %s", 
       (rigidBody.isTrackingValid ? "YES" : "NO"));
+    
   }
 }
 

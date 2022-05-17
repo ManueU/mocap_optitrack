@@ -104,6 +104,7 @@ struct ModelFrame
   std::vector<Marker> otherMarkers;
   std::vector<RigidBody> rigidBodies;
 
+
   float latency;
 };
 
